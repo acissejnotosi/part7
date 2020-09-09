@@ -1,10 +1,9 @@
 const initialState = "";
 
 const notificationReducer = (state = initialState, action) => {
-  console.log(action.data)
   switch (action.type) {
     case "SHOW": {
-      return action.data;
+      return action.data.message;
     }
     default: {
       return state;

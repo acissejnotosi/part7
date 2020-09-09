@@ -69,12 +69,12 @@ const App = () => {
       });
       store.dispatch({
         type: "SHOW",
-        data: `a new blog ${title} by ${author} added`,
+        data: { message: `a new blog ${title} by ${author} added` },
       });
       setTimeout(() => {
         store.dispatch({
           type: "SHOW",
-          data: ``,
+          data: { message: `` },
         });
       }, 5000);
     } catch (exception) {
@@ -92,12 +92,12 @@ const App = () => {
         setBlogs(blogs.filter((item) => item.id !== blog.id));
         store.dispatch({
           type: "SHOW",
-          data: `Blog ${blog.title} removed with success!`,
+          data: { message: `Blog ${blog.title} removed with success!` },
         });
         setTimeout(() => {
           store.dispatch({
             type: "SHOW",
-            data: ``,
+            data: { message: `` },
           });
         }, 5000);
       } catch (error) {
@@ -119,12 +119,12 @@ const App = () => {
       );
       store.dispatch({
         type: "SHOW",
-        data:`Blog ${blog.title} was successfully updated!`,
+        data: { message: `Blog ${blog.title} was successfully updated!` },
       });
       setTimeout(() => {
         store.dispatch({
           type: "SHOW",
-          data:``,
+          data: { message: `` },
         });
       }, 5000);
     } catch (error) {
@@ -164,7 +164,6 @@ const App = () => {
 
   return (
     <div>
-      
       <ErrorNotification message={errorMessage} />
       <h2>blogs</h2>
       {user === null ? (
