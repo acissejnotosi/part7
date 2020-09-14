@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 
 const SuccessNotification = (props) => {
 
@@ -9,6 +9,11 @@ const SuccessNotification = (props) => {
     borderWidth: 1,
   };
 
+  console.log(props.notification)
+  if (props.notification === null) {
+    return null;
+  }
+
   return (
     <div hidden={props.notification === ""} style={style}>
       {props.notification}
@@ -16,8 +21,8 @@ const SuccessNotification = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
+/* const mapStateToProps = (state) => {
   return {notification : state.notification}
-}
-const connectNotification = connect(mapStateToProps)(SuccessNotification);
-export default connectNotification;
+} */
+//const connectNotification = connect(mapStateToProps)(SuccessNotification);
+export default SuccessNotification;

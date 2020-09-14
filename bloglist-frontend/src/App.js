@@ -1,29 +1,31 @@
-import React, { useState, useEffect, useDispatch } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import SuccessNotification from "./components/Notification";
 import ErrorNotification from "./components/errorNotification";
 import LoginForm from "./components/login";
 import CreateBlog from "./components/createBlog";
 import Togglable from "./components/togglable";
-import { createStore } from "redux";
-import notificationReducer from "./reducers/notificationReducer";
-const store = createStore(notificationReducer);
+import { newBlog, showBlog } from "./reducers/blogReducer";
+import { showNotification } from "./reducers/notificationReducer";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
   const [user, setUser] = useState(null);
-  //const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const blogs = useSelector(({ blogs }) => blogs);
+  const notification = useSelector(({ notification }) => notification);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
-      setBlogs(blogs);
+      dispatch(showBlog(blogs));
     });
   }, []);
 
@@ -60,24 +62,23 @@ const App = () => {
     }
   };
 
-  const handleCreateBlog = async () => {
+  const handleCreateBlog = async (event) => {
+    event.preventDefault();
+    console.log("entrou handle createblog");
     try {
-      await blogService.create({
+      const createdblog = await blogService.create({
         title,
         author,
         url,
       });
-      store.dispatch({
-        type: "SHOW",
-        data: { message: `a new blog ${title} by ${author} added` },
-      });
+      console.log(createdblog);
+      dispatch(newBlog(createdblog));
+      dispatch(showNotification(`a new blog ${title} by ${author} added`));
       setTimeout(() => {
-        store.dispatch({
-          type: "SHOW",
-          data: { message: `` },
-        });
+        dispatch(showNotification(``));
       }, 5000);
     } catch (exception) {
+      console.log(exception)
       setErrorMessage("Error, blog not created");
       setTimeout(() => {
         setErrorMessage(null);
@@ -89,16 +90,10 @@ const App = () => {
     if (window.confirm(`Delete ${blog.title}?`)) {
       try {
         await blogService.del(blog.id);
-        setBlogs(blogs.filter((item) => item.id !== blog.id));
-        store.dispatch({
-          type: "SHOW",
-          data: { message: `Blog ${blog.title} removed with success!` },
-        });
+        // setBlogs(blogs.filter((item) => item.id !== blog.id));
+        dispatch(showNotification(`Blog ${blog.title} removed with success!`));
         setTimeout(() => {
-          store.dispatch({
-            type: "SHOW",
-            data: { message: `` },
-          });
+          dispatch(showNotification(``));
         }, 5000);
       } catch (error) {
         setErrorMessage(error.response.data.error);
@@ -114,18 +109,14 @@ const App = () => {
     const updatedBlog = { ...blog, likes: blog.likes };
     try {
       const returnedBlog = await blogService.update(blog.id, updatedBlog);
-      setBlogs(
+      /*  setBlogs(
         blogs.map((item) => (item.id !== blog.id ? item : returnedBlog))
+      ); */
+      dispatch(
+        showNotification(`Blog ${blog.title} was successfully updated!`)
       );
-      store.dispatch({
-        type: "SHOW",
-        data: { message: `Blog ${blog.title} was successfully updated!` },
-      });
       setTimeout(() => {
-        store.dispatch({
-          type: "SHOW",
-          data: { message: `` },
-        });
+        dispatch(showNotification(``));
       }, 5000);
     } catch (error) {
       setErrorMessage(error.response.data.error);
@@ -136,23 +127,28 @@ const App = () => {
   };
 
   const showBlogs = () => {
+    if (blogs === null) {
+      return null;
+    }
     return (
       <div>
         {blogs
           .sort((item1, item2) => item1.likes < item2.likes)
-          .map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              handleLikeButton={updateWithLikes}
-              handleDeleteButton={handleDeleteButton}
-              showDeleteButton={
-                blog.user.id === user.id
-                  ? { visibility: "visible" }
-                  : { visibility: "hidden" }
-              }
-            />
-          ))}
+          .map((blog) => {
+            return (
+              <Blog
+                key={blog.id}
+                blog={blog}
+                handleLikeButton={updateWithLikes}
+                handleDeleteButton={handleDeleteButton}
+                showDeleteButton={
+                  blog.user.id === user.id
+                    ? { visibility: "visible" }
+                    : { visibility: "hidden" }
+                }
+              />
+            );
+          })}
       </div>
     );
   };
@@ -164,6 +160,7 @@ const App = () => {
 
   return (
     <div>
+      {/*  <SuccessNotification notification = {store.useState}/> */}
       <ErrorNotification message={errorMessage} />
       <h2>blogs</h2>
       {user === null ? (

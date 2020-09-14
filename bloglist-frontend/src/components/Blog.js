@@ -17,7 +17,6 @@ const Blog = ({
   const [blogVisible, setBlogVisible] = useState(false);
   const hideWhenVisible = { display: blogVisible ? "none" : "" };
   const showWhenVisible = { display: blogVisible ? "" : "none" };
-
   const label = "view";
   return (
     <div style={blogStyle}>

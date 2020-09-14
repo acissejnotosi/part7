@@ -1,4 +1,4 @@
-const initialState = "";
+const initialState = null;
 
 const notificationReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -11,13 +11,13 @@ const notificationReducer = (state = initialState, action) => {
   }
 };
 
-/* export const show = (message) => {
+export const showNotification = (message) => {
   return {
     type: "SHOW",
     data: {
-      message,
+      message : message,
     },
   };
 };
- */
+
 export default notificationReducer;
