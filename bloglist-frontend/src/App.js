@@ -8,7 +8,12 @@ import ErrorNotification from "./components/errorNotification";
 import LoginForm from "./components/login";
 import CreateBlog from "./components/createBlog";
 import Togglable from "./components/togglable";
-import { newBlog, showBlog } from "./reducers/blogReducer";
+import {
+  newBlog,
+  showBlog,
+  deleteBlog,
+  likeBlog,
+} from "./reducers/blogReducer";
 import { showNotification } from "./reducers/notificationReducer";
 
 const App = () => {
@@ -64,21 +69,18 @@ const App = () => {
 
   const handleCreateBlog = async (event) => {
     event.preventDefault();
-    console.log("entrou handle createblog");
     try {
       const createdblog = await blogService.create({
         title,
         author,
         url,
       });
-      console.log(createdblog);
       dispatch(newBlog(createdblog));
       dispatch(showNotification(`a new blog ${title} by ${author} added`));
       setTimeout(() => {
         dispatch(showNotification(``));
       }, 5000);
     } catch (exception) {
-      console.log(exception)
       setErrorMessage("Error, blog not created");
       setTimeout(() => {
         setErrorMessage(null);
@@ -90,13 +92,13 @@ const App = () => {
     if (window.confirm(`Delete ${blog.title}?`)) {
       try {
         await blogService.del(blog.id);
-        // setBlogs(blogs.filter((item) => item.id !== blog.id));
+        dispatch(deleteBlog(blog.id));
         dispatch(showNotification(`Blog ${blog.title} removed with success!`));
         setTimeout(() => {
           dispatch(showNotification(``));
         }, 5000);
       } catch (error) {
-        setErrorMessage(error.response.data.error);
+        setErrorMessage(error);
         setTimeout(() => {
           setErrorMessage(null);
         }, 5000);
@@ -108,10 +110,8 @@ const App = () => {
     blog.likes += 1;
     const updatedBlog = { ...blog, likes: blog.likes };
     try {
-      const returnedBlog = await blogService.update(blog.id, updatedBlog);
-      /*  setBlogs(
-        blogs.map((item) => (item.id !== blog.id ? item : returnedBlog))
-      ); */
+      await blogService.update(blog.id, updatedBlog);
+      dispatch(likeBlog(blog.id));
       dispatch(
         showNotification(`Blog ${blog.title} was successfully updated!`)
       );
@@ -119,7 +119,7 @@ const App = () => {
         dispatch(showNotification(``));
       }, 5000);
     } catch (error) {
-      setErrorMessage(error.response.data.error);
+      setErrorMessage(error);
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
