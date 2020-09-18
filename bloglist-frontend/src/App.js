@@ -14,6 +14,7 @@ import {
   deleteBlog,
   likeBlog,
 } from "./reducers/blogReducer";
+import { connectUser } from "./reducers/userReducer";
 import { showNotification } from "./reducers/notificationReducer";
 
 const App = () => {
@@ -23,25 +24,26 @@ const App = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
-  const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+
   const blogs = useSelector(({ blogs }) => blogs);
   const notification = useSelector(({ notification }) => notification);
+  const user = useSelector(({ currentUser }) => currentUser);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
       dispatch(showBlog(blogs));
     });
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
+      dispatch(connectUser(user));
       blogService.setToken(user.token);
     }
-  }, []);
+  }, [dispatch]);
 
   const handleUsernameChange = ({ target }) => setUsername(target.value);
 
@@ -56,7 +58,7 @@ const App = () => {
       });
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
       blogService.setToken(user.token);
-      setUser(user);
+      dispatch(connectUser(user));
       setUsername("");
       setPassword("");
     } catch (exception) {

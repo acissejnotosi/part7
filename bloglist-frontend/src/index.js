@@ -6,10 +6,12 @@ import { Provider } from "react-redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import notificationReducer from "./reducers/notificationReducer";
 import blogReducer from "./reducers/blogReducer.js";
+import userReducer from "./reducers/userReducer.js";
 
 const reducer = combineReducers({
   notification: notificationReducer,
   blogs: blogReducer,
+  currentUser: userReducer,
 });
 
 const store = createStore(reducer, composeWithDevTools());
