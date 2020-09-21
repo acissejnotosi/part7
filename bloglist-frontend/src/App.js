@@ -19,8 +19,6 @@ import { showNotification } from "./reducers/notificationReducer";
 
 const App = () => {
   const dispatch = useDispatch();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
@@ -44,30 +42,6 @@ const App = () => {
       blogService.setToken(user.token);
     }
   }, [dispatch]);
-
-  const handleUsernameChange = ({ target }) => setUsername(target.value);
-
-  const handlePasswordChange = ({ target }) => setPassword(target.value);
-
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-      dispatch(connectUser(user));
-      setUsername("");
-      setPassword("");
-    } catch (exception) {
-      setErrorMessage("Wrong username or password");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-    }
-  };
 
   const handleCreateBlog = async (event) => {
     event.preventDefault();
@@ -166,13 +140,7 @@ const App = () => {
       <ErrorNotification message={errorMessage} />
       <h2>blogs</h2>
       {user === null ? (
-        <LoginForm
-          username={username}
-          password={password}
-          handleLogin={handleLogin}
-          handlePasswordChange={handlePasswordChange}
-          handleUsernameChange={handleUsernameChange}
-        />
+        <LoginForm/>
       ) : (
         <div>
           {" "}
