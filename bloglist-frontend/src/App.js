@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Blog from "./components/Blog";
+import Blog from "./components/blog";
 import blogService from "./services/blogs";
-import loginService from "./services/login";
-import SuccessNotification from "./components/Notification";
+import userService from "./services/users";
+import SuccessNotification from "./components/successNotification";
 import ErrorNotification from "./components/errorNotification";
 import LoginForm from "./components/login";
 import CreateBlog from "./components/createBlog";
 import Togglable from "./components/togglable";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import {
   newBlog,
   showBlog,
@@ -16,21 +17,36 @@ import {
 } from "./reducers/blogReducer";
 import { connectUser } from "./reducers/userReducer";
 import { showNotification } from "./reducers/notificationReducer";
+import { showError } from "./reducers/errorReducer";
+import Users from "./components/users";
+import { setUsers } from "./reducers/usersReducer";
 
 const App = () => {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
-  const [errorMessage, setErrorMessage] = useState(null);
 
   const blogs = useSelector(({ blogs }) => blogs);
   const notification = useSelector(({ notification }) => notification);
   const user = useSelector(({ currentUser }) => currentUser);
+  const error = useSelector(({ error }) => error);
+  const users = useSelector(({ users }) => users);
+
+  const padding = {
+    padding: 5,
+  };
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
       dispatch(showBlog(blogs));
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
+    userService.getAll().then((usersGroup) => {
+      console.log(usersGroup);
+      dispatch(setUsers(usersGroup));
     });
   }, [dispatch]);
 
@@ -56,10 +72,10 @@ const App = () => {
       setTimeout(() => {
         dispatch(showNotification(``));
       }, 5000);
-    } catch (exception) {
-      setErrorMessage("Error, blog not created");
+    } catch (error) {
+      dispatch(showError(error));
       setTimeout(() => {
-        setErrorMessage(null);
+        dispatch(showError(null));
       }, 5000);
     }
   };
@@ -74,9 +90,9 @@ const App = () => {
           dispatch(showNotification(``));
         }, 5000);
       } catch (error) {
-        setErrorMessage(error);
+        dispatch(showError(error));
         setTimeout(() => {
-          setErrorMessage(null);
+          dispatch(showError(null));
         }, 5000);
       }
     }
@@ -95,9 +111,9 @@ const App = () => {
         dispatch(showNotification(``));
       }, 5000);
     } catch (error) {
-      setErrorMessage(error);
+      dispatch(showError(error));
       setTimeout(() => {
-        setErrorMessage(null);
+        dispatch(showError(null));
       }, 5000);
     }
   };
@@ -136,11 +152,23 @@ const App = () => {
 
   return (
     <div>
-      {/*  <SuccessNotification notification = {store.useState}/> */}
-      <ErrorNotification message={errorMessage} />
+      <Router>
+        <div>
+          <Link style={padding} to="/users">
+            users
+          </Link>
+        </div>
+        <Switch>
+          <Route path="/users">
+            <Users users= {users}/>
+          </Route>
+        </Switch>
+      </Router>
+      <SuccessNotification message={notification} />
+      <ErrorNotification message={error} />
       <h2>blogs</h2>
       {user === null ? (
-        <LoginForm/>
+        <LoginForm />
       ) : (
         <div>
           {" "}

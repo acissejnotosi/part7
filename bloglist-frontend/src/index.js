@@ -7,11 +7,15 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import notificationReducer from "./reducers/notificationReducer";
 import blogReducer from "./reducers/blogReducer.js";
 import userReducer from "./reducers/userReducer.js";
+import errorReducer from "./reducers/errorReducer.js";
+import usersReducer from "./reducers/usersReducer.js";
 
 const reducer = combineReducers({
   notification: notificationReducer,
   blogs: blogReducer,
   currentUser: userReducer,
+  error: errorReducer,
+  users: usersReducer
 });
 
 const store = createStore(reducer, composeWithDevTools());

@@ -1,6 +1,6 @@
 const initialState = null;
 
-const notificationReducer = (state = initialState, action) => {
+const errorReducer = (state = initialState, action) => {
   console.log(action)
   switch (action.type) {
     case "SHOW": {
@@ -12,13 +12,13 @@ const notificationReducer = (state = initialState, action) => {
   }
 };
 
-export const showNotification = (message) => {
+export const showError = (error) => {
   return {
     type: "SHOW",
     data: {
-      message : message,
+      message : error,
     },
   };
 };
 
-export default notificationReducer;
+export default errorReducer;
