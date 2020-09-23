@@ -152,46 +152,52 @@ const App = () => {
 
   return (
     <div>
+      <SuccessNotification message={notification} />
+      <ErrorNotification message={error} />
       <Router>
         <div>
+        <Link style={padding} to="/blogs">
+            blogs
+          </Link>
           <Link style={padding} to="/users">
             users
           </Link>
         </div>
         <Switch>
           <Route path="/users">
-            <Users users= {users}/>
+            <Users users={users} />
+          </Route>
+          <Route path="/blogs">
+            {" "}
+            <h2>blogs</h2>
+            {user === null ? (
+              <LoginForm />
+            ) : (
+              <div>
+                {" "}
+                <p>
+                  {user.name} logged in{" "}
+                  <button id="logout" type="button" onClick={handleLogout}>
+                    logout
+                  </button>
+                </p>
+                <Togglable buttonLabel="Create">
+                  <CreateBlog
+                    title={title}
+                    author={author}
+                    url={url}
+                    handleTitleChange={({ target }) => setTitle(target.value)}
+                    handleAuthorChange={({ target }) => setAuthor(target.value)}
+                    handleUrlChange={({ target }) => setUrl(target.value)}
+                    handleCreateBlog={handleCreateBlog}
+                  />
+                </Togglable>
+                {showBlogs()}
+              </div>
+            )}
           </Route>
         </Switch>
       </Router>
-      <SuccessNotification message={notification} />
-      <ErrorNotification message={error} />
-      <h2>blogs</h2>
-      {user === null ? (
-        <LoginForm />
-      ) : (
-        <div>
-          {" "}
-          <p>
-            {user.name} logged in{" "}
-            <button id="logout" type="button" onClick={handleLogout}>
-              logout
-            </button>
-          </p>
-          <Togglable buttonLabel="Create">
-            <CreateBlog
-              title={title}
-              author={author}
-              url={url}
-              handleTitleChange={({ target }) => setTitle(target.value)}
-              handleAuthorChange={({ target }) => setAuthor(target.value)}
-              handleUrlChange={({ target }) => setUrl(target.value)}
-              handleCreateBlog={handleCreateBlog}
-            />
-          </Togglable>
-          {showBlogs()}
-        </div>
-      )}
     </div>
   );
 };
