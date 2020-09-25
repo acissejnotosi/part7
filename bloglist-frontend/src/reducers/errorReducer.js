@@ -1,7 +1,6 @@
 const initialState = null;
 
 const errorReducer = (state = initialState, action) => {
-  console.log(action)
   switch (action.type) {
     case "SHOW": {
       return  action.data.message

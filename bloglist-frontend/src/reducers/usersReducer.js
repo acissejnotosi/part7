@@ -1,7 +1,6 @@
 const initialState = null;
 
 const usersReducer = (state = initialState, action) => {
-  console.log(action)
   switch (action.type) {
     case "SET": {
       return action.data.users;

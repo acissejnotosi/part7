@@ -1,15 +1,7 @@
-import React, { useState } from "react";
-/* 
-const blogStyle = {
-  paddingTop: 10,
-  paddingLeft: 2,
-  border: "solid",
-  borderWidth: 1,
-  marginBottom: 5,
-}; */
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Users = ({ users }) => {
-  
   if (users === null) return null;
 
   return (
@@ -23,7 +15,9 @@ const Users = ({ users }) => {
           </tr>
           {users.map((user) => (
             <tr key={user.id}>
-              <td>{user.name}</td>
+              <td>
+                <Link to={`/users/${user.id}`}>{user.name}</Link>
+              </td>
               <td>{user.blogs.length}</td>
             </tr>
           ))}
