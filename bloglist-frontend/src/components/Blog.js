@@ -15,12 +15,18 @@ const Blog = ({
   return (
     <div>
       {" "}
-      <h2>{blog.title} {blog.author}</h2>
+      <h2>
+        {blog.title} {blog.author}
+      </h2>
       <div>
         <div>{blog.url} </div>
         <div>
-          <div id={"like-label"}>{blog.likes} likes<button id={"like-button"} onClick={() => handleLikeButton(blog)}>Like</button></div>
-          
+          <div id={"like-label"}>
+            {blog.likes} likes
+            <button id={"like-button"} onClick={() => handleLikeButton(blog)}>
+              Like
+            </button>
+          </div>
         </div>
         <div>Added by {blog.user.name} </div>
         <button
@@ -29,6 +35,7 @@ const Blog = ({
         >
           delete
         </button>
+        <h3>comments</h3>
       </div>
     </div>
   );

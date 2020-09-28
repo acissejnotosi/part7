@@ -12,8 +12,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
-  Redirect,
+  Link
 } from "react-router-dom";
 import {
   newBlog,
@@ -39,6 +38,7 @@ const App = () => {
   const user = useSelector(({ currentUser }) => currentUser);
   const error = useSelector(({ error }) => error);
   const users = useSelector(({ users }) => users);
+  const feedback = useSelector(({feedback}) => feedback);
 
   const padding = {
     padding: 5,
@@ -54,9 +54,9 @@ const App = () => {
 
   const navStyle = {
     padding: 3,
-    backgroundColor: "#D3D3D3",  
+    backgroundColor: "#D3D3D3",
     borderWidth: 1,
-    margin : 5
+    margin: 5,
   };
 
   useEffect(() => {
@@ -65,9 +65,14 @@ const App = () => {
     });
   }, [dispatch]);
 
+/*   useEffect(() => {
+    feedbackService.getAll().then((comments) => {
+      dispatch(showFeedback(comments));
+    });
+  }, [dispatch]); */
+
   useEffect(() => {
     userService.getAll().then((usersGroup) => {
-      console.log(usersGroup);
       dispatch(setUsers(usersGroup));
     });
   }, [dispatch]);
@@ -134,7 +139,6 @@ const App = () => {
         dispatch(showNotification(``));
       }, 5000);
     } catch (error) {
-      console.log(error);
       dispatch(showError(error));
       setTimeout(() => {
         dispatch(showError(null));
@@ -171,12 +175,10 @@ const App = () => {
   const LoginLogout = () => {
     return (
       <>
-
-          {user.name} logged in{" "}
-          <button id="logout" type="button" onClick={handleLogout}>
-            logout
-          </button>
-
+        {user.name} logged in{" "}
+        <button id="logout" type="button" onClick={handleLogout}>
+          logout
+        </button>
       </>
     );
   };
@@ -187,7 +189,7 @@ const App = () => {
         <LoginForm />
       ) : (
         <Router>
-          <div  style={navStyle}>
+          <div style={navStyle}>
             <Link style={padding} to="/blogs">
               blogs
             </Link>
