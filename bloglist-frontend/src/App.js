@@ -8,7 +8,13 @@ import ErrorNotification from "./components/errorNotification";
 import LoginForm from "./components/login";
 import CreateBlog from "./components/createBlog";
 import Togglable from "./components/togglable";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
 import {
   newBlog,
   showBlog,
@@ -36,6 +42,21 @@ const App = () => {
 
   const padding = {
     padding: 5,
+  };
+
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: "solid",
+    borderWidth: 1,
+    marginBottom: 5,
+  };
+
+  const navStyle = {
+    padding: 3,
+    backgroundColor: "#D3D3D3",  
+    borderWidth: 1,
+    margin : 5
   };
 
   useEffect(() => {
@@ -84,6 +105,7 @@ const App = () => {
   const handleDeleteButton = async (blog) => {
     if (window.confirm(`Delete ${blog.title}?`)) {
       try {
+        this.context.router.push("/blogs");
         await blogService.del(blog.id);
         dispatch(deleteBlog(blog.id));
         dispatch(showNotification(`Blog ${blog.title} removed with success!`));
@@ -112,6 +134,7 @@ const App = () => {
         dispatch(showNotification(``));
       }, 5000);
     } catch (error) {
+      console.log(error);
       dispatch(showError(error));
       setTimeout(() => {
         dispatch(showError(null));
@@ -129,17 +152,11 @@ const App = () => {
           .sort((item1, item2) => item1.likes < item2.likes)
           .map((blog) => {
             return (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                handleLikeButton={updateWithLikes}
-                handleDeleteButton={handleDeleteButton}
-                showDeleteButton={
-                  blog.user.id === user.id
-                    ? { visibility: "visible" }
-                    : { visibility: "hidden" }
-                }
-              />
+              <div key={blog.id} style={blogStyle}>
+                <Link to={`/blogs/${blog.id}`}>
+                  {blog.title} {blog.author}
+                </Link>
+              </div>
             );
           })}
       </div>
@@ -154,65 +171,70 @@ const App = () => {
   const LoginLogout = () => {
     return (
       <>
-        <p>
+
           {user.name} logged in{" "}
           <button id="logout" type="button" onClick={handleLogout}>
             logout
           </button>
-        </p>
+
       </>
     );
   };
 
   return (
-    <div> 
-      <SuccessNotification message={notification} />
-      <ErrorNotification message={error} />
-        {user === null ? (
-            <LoginForm />
-          ) : (
-      <Router>
-        <div>
-          <Link style={padding} to="/blogs">
-            blogs
-          </Link>
-          <Link style={padding} to="/users">
-            users
-          </Link>
-        </div>
-        <LoginLogout />
-        <Switch>
-          <Route path="/users/:id">
-            <User users={users} />
-          </Route>
-          <Route path="/users">
-            <Users users={users} />
-          </Route>
-          <Route path="/blogs">
-            {" "}
-            <h2>blogs</h2>
-            <div>
+    <div>
+      {user === null ? (
+        <LoginForm />
+      ) : (
+        <Router>
+          <div  style={navStyle}>
+            <Link style={padding} to="/blogs">
+              blogs
+            </Link>
+            <Link style={padding} to="/users">
+              users
+            </Link>
+            <LoginLogout />
+          </div>
+          <SuccessNotification message={notification} />
+          <ErrorNotification message={error} />
+          <Switch>
+            <Route path="/users/:id">
+              <User users={users} />
+            </Route>
+            <Route path="/blogs/:id">
+              <Blog
+                blogs={blogs}
+                handleDeleteButton={handleDeleteButton}
+                handleLikeButton={updateWithLikes}
+              />
+            </Route>
+            <Route path="/users">
+              <Users users={users} />
+            </Route>
+            <Route path="/blogs">
               {" "}
-              <Togglable buttonLabel="Create">
-                <CreateBlog
-                  title={title}
-                  author={author}
-                  url={url}
-                  handleTitleChange={({ target }) => setTitle(target.value)}
-                  handleAuthorChange={({ target }) => setAuthor(target.value)}
-                  handleUrlChange={({ target }) => setUrl(target.value)}
-                  handleCreateBlog={handleCreateBlog}
-                />
-              </Togglable>
-              {showBlogs()}
-            </div>
-            )
-          </Route>
-        </Switch>
-      </Router>
-        )}
+              <h2>blogs</h2>
+              <div>
+                {" "}
+                <Togglable buttonLabel="Create">
+                  <CreateBlog
+                    title={title}
+                    author={author}
+                    url={url}
+                    handleTitleChange={({ target }) => setTitle(target.value)}
+                    handleAuthorChange={({ target }) => setAuthor(target.value)}
+                    handleUrlChange={({ target }) => setUrl(target.value)}
+                    handleCreateBlog={handleCreateBlog}
+                  />
+                </Togglable>
+                {showBlogs()}
+              </div>
+            </Route>
+          </Switch>
+        </Router>
+      )}
     </div>
-
   );
 };
 

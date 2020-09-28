@@ -11,7 +11,7 @@ const errorStyle = {
 };
 
 const ErrorNotification = ({ message }) => {
-  if (message === null) {
+  if (message === null || message === "" ) {
     return null;
   }
 

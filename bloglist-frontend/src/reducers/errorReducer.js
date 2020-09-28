@@ -2,7 +2,7 @@ const initialState = null;
 
 const errorReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "SHOW": {
+    case "SHOWERROR": {
       return  action.data.message
     }
     default: {
@@ -13,7 +13,7 @@ const errorReducer = (state = initialState, action) => {
 
 export const showError = (error) => {
   return {
-    type: "SHOW",
+    type: "SHOWERROR",
     data: {
       message : error,
     },

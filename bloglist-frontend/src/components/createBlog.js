@@ -10,7 +10,6 @@ const createBlog = ({
   url,
 }) => {
 
-  console.log("entrou");
   return (
     <form onSubmit={handleCreateBlog}>
       <h2>create new</h2>

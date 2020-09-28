@@ -11,7 +11,7 @@ const successStyle = {
 };
 
 const SuccessNotification = ({ message }) => {
-  if (message === null ) {
+  if (message === null || message === "" ) {
     return null;
   }
 

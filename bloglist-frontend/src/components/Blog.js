@@ -1,47 +1,28 @@
-import React, { useState } from "react";
-
-const blogStyle = {
-  paddingTop: 10,
-  paddingLeft: 2,
-  border: "solid",
-  borderWidth: 1,
-  marginBottom: 5,
-};
+import React from "react";
+import { useRouteMatch } from "react-router-dom";
 
 const Blog = ({
-  blog,
+  blogs,
   handleLikeButton,
   handleDeleteButton,
   showDeleteButton,
 }) => {
-  const [blogVisible, setBlogVisible] = useState(false);
-  const hideWhenVisible = { display: blogVisible ? "none" : "" };
-  const showWhenVisible = { display: blogVisible ? "" : "none" };
-  const label = "view";
+  const match = useRouteMatch("/blogs/:id");
+  if (blogs === null) return null;
+  const blog = match ? blogs.find((blog) => blog.id === match.params.id) : null;
+  if (blog === null) return null;
+
   return (
-    <div style={blogStyle}>
+    <div>
       {" "}
-      {blog.title} {blog.author}
-      <button
-        style={hideWhenVisible}
-        id={"view"}
-        className="visibleContent"
-        onClick={() => setBlogVisible(true)}
-      >
-        {label}
-      </button>
-      <button style={showWhenVisible} onClick={() => setBlogVisible(false)}>
-        hide
-      </button>
-      <div style={showWhenVisible} className="hiddenContent">
+      <h2>{blog.title} {blog.author}</h2>
+      <div>
         <div>{blog.url} </div>
         <div>
-          <div id={"like-label"}>{blog.likes}</div>
-          <button id={"like-button"} onClick={() => handleLikeButton(blog)}>
-            like
-          </button>
+          <div id={"like-label"}>{blog.likes} likes<button id={"like-button"} onClick={() => handleLikeButton(blog)}>Like</button></div>
+          
         </div>
-        <div>{blog.user.name} </div>
+        <div>Added by {blog.user.name} </div>
         <button
           style={showDeleteButton}
           onClick={() => handleDeleteButton(blog)}
