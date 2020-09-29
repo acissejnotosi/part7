@@ -23,6 +23,10 @@ const blogReducer = (state = initialState, action) => {
       };
       return state.map((blog) => (blog.id !== id ? blog : changedBlog));
     }
+    case "FEEDBACK": {
+      console.log(action.data.blog)
+      return state.map((blog) => (blog.id !== action.data.blog.id ? blog : action.data.blog));
+    }
     default: {
       return state;
     }
@@ -64,5 +68,15 @@ export const likeBlog = (id) => {
     },
   };
 };
+
+export const newFeedback = (blog) => {
+  return {
+    type: "FEEDBACK",
+    data: {
+      blog : blog
+    },
+  };
+};
+
 
 export default blogReducer;

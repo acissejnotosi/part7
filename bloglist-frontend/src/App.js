@@ -38,8 +38,7 @@ const App = () => {
   const user = useSelector(({ currentUser }) => currentUser);
   const error = useSelector(({ error }) => error);
   const users = useSelector(({ users }) => users);
-  const feedback = useSelector(({feedback}) => feedback);
-
+  
   const padding = {
     padding: 5,
   };
