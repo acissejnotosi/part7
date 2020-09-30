@@ -4,7 +4,6 @@ import blogService from "../services/blogs";
 import { showNotification } from "../reducers/notificationReducer";
 import { showError } from "../reducers/errorReducer";
 import { newFeedback } from "../reducers/blogReducer";
-import { useDispatch } from "react-redux";
 const shortid = require('shortid');
  
 const Blog = ({
@@ -12,8 +11,9 @@ const Blog = ({
   handleLikeButton,
   handleDeleteButton,
   showDeleteButton,
+  dispatch
 }) => {
-  const dispatch = useDispatch();
+  
   const match = useRouteMatch("/blogs/:id");
   if (blogs === null) return null;
   const blog = match ? blogs.find((blog) => blog.id === match.params.id) : null;
@@ -27,7 +27,6 @@ const Blog = ({
       const newBlog = { ...blog, comments: [...blog.comments, comment] };
       console.log(newBlog)
       const updatedBlog = await blogService.updateWithComment(newBlog);
-      console.log(updatedBlog)
       dispatch(newFeedback(updatedBlog));
       dispatch(showNotification(`a new comment added`));
       setTimeout(() => {

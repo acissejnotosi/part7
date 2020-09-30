@@ -27,6 +27,7 @@ const update = async (id, newObject) => {
 const updateWithComment = async (newObject) => {
   const request = axios.post(`${baseUrl}/${newObject.id}/comments`, newObject);
   const response = await request;
+  console.log(response);
   return response.data;
 };
 

@@ -38,7 +38,7 @@ const App = () => {
   const user = useSelector(({ currentUser }) => currentUser);
   const error = useSelector(({ error }) => error);
   const users = useSelector(({ users }) => users);
-  
+
   const padding = {
     padding: 5,
   };
@@ -208,6 +208,7 @@ const App = () => {
                 blogs={blogs}
                 handleDeleteButton={handleDeleteButton}
                 handleLikeButton={updateWithLikes}
+                dispatch = {dispatch}
               />
             </Route>
             <Route path="/users">
