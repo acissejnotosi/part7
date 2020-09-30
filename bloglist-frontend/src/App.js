@@ -8,12 +8,7 @@ import ErrorNotification from "./components/errorNotification";
 import LoginForm from "./components/login";
 import CreateBlog from "./components/createBlog";
 import Togglable from "./components/togglable";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import {
   newBlog,
   showBlog,
@@ -26,6 +21,23 @@ import { showError } from "./reducers/errorReducer";
 import Users from "./components/users";
 import { setUsers } from "./reducers/usersReducer";
 import User from "./components/user";
+import styled from "styled-components";
+
+const Page = styled.div`
+padding: 1em;
+background: papayawhip;
+`;
+
+const Navigation = styled.div`
+background: BurlyWood;
+padding: 1em;
+`;
+
+const Footer = styled.div`
+background: Chocolate;
+padding: 1em;
+margin-top: 1em;
+`;
 
 const App = () => {
   const dispatch = useDispatch();
@@ -51,24 +63,11 @@ const App = () => {
     marginBottom: 5,
   };
 
-  const navStyle = {
-    padding: 3,
-    backgroundColor: "#D3D3D3",
-    borderWidth: 1,
-    margin: 5,
-  };
-
   useEffect(() => {
     blogService.getAll().then((blogs) => {
       dispatch(showBlog(blogs));
     });
   }, [dispatch]);
-
-/*   useEffect(() => {
-    feedbackService.getAll().then((comments) => {
-      dispatch(showFeedback(comments));
-    });
-  }, [dispatch]); */
 
   useEffect(() => {
     userService.getAll().then((usersGroup) => {
@@ -183,20 +182,22 @@ const App = () => {
   };
 
   return (
-    <div>
+    <Page>
       {user === null ? (
         <LoginForm />
       ) : (
         <Router>
-          <div style={navStyle}>
-            <Link style={padding} to="/blogs">
-              blogs
-            </Link>
-            <Link style={padding} to="/users">
-              users
-            </Link>
-            <LoginLogout />
-          </div>
+          <Navigation>
+            <div>
+              <Link style={padding} to="/blogs">
+                blogs
+              </Link>
+              <Link style={padding} to="/users">
+                users
+              </Link>
+              <LoginLogout />
+            </div>
+          </Navigation>
           <SuccessNotification message={notification} />
           <ErrorNotification message={error} />
           <Switch>
@@ -208,7 +209,7 @@ const App = () => {
                 blogs={blogs}
                 handleDeleteButton={handleDeleteButton}
                 handleLikeButton={updateWithLikes}
-                dispatch = {dispatch}
+                dispatch={dispatch}
               />
             </Route>
             <Route path="/users">
@@ -236,7 +237,11 @@ const App = () => {
           </Switch>
         </Router>
       )}
-    </div>
+      <Footer>
+        {" "}
+        <em>Blog app, Department of Computer Science 2020</em>
+      </Footer>
+    </Page>
   );
 };
 

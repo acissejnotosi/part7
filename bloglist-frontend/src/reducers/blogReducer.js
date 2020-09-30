@@ -11,7 +11,6 @@ const blogReducer = (state = initialState, action) => {
     case "DELETE": {
       const id = action.data.id;
       const newState = state.filter((blog) => blog.id !== id);
-      console.log(newState);
       return newState;
     }
     case "LIKE": {
@@ -24,7 +23,6 @@ const blogReducer = (state = initialState, action) => {
       return state.map((blog) => (blog.id !== id ? blog : changedBlog));
     }
     case "FEEDBACK": {
-      console.log(action.data.blog)
       return state.map((blog) => (blog.id !== action.data.blog.id ? blog : action.data.blog));
     }
     default: {

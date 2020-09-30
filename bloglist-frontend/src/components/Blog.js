@@ -22,10 +22,8 @@ const Blog = ({
   const handleNewComment = async (event) => {
     event.preventDefault();
     const comment = event.target.comment.value;
-    console.log(comment)
     try {
       const newBlog = { ...blog, comments: [...blog.comments, comment] };
-      console.log(newBlog)
       const updatedBlog = await blogService.updateWithComment(newBlog);
       dispatch(newFeedback(updatedBlog));
       dispatch(showNotification(`a new comment added`));
